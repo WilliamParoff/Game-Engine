@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.Group?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="wp.gameengine.controllers.MainController">
+    <top>
+        <MenuBar>
+            <Menu text="File">
+
+            </Menu>
+        </MenuBar>
+    </top>
+    <left>
+        <BorderPane prefWidth="100">
+            <top>
+                <Group>
+                    <fx:define>
+                        <ToggleGroup fx:id="leftWindowToggle"/>
+                    </fx:define>
+                    <ToolBar>
+                        <items>
+                            <ToggleButton text="Hierarchy" toggleGroup="${leftWindowToggle}" selected="true"/>
+                            <ToggleButton text="Inspector" toggleGroup="${leftWindowToggle}"/>
+                        </items>
+                    </ToolBar>
+                </Group>
+            </top>
+        </BorderPane>
+    </left>
+    <center>
+
+    </center>
+    <right>
+
+    </right>
+    <bottom>
+
+    </bottom>
+</BorderPane>
