@@ -15,9 +15,10 @@ public class Main extends Application {
         URL sceneSource = Objects.requireNonNull(Main.class.getResource("main.fxml"));
 
         FXMLLoader sceneLoader = new FXMLLoader(sceneSource);
-        Scene scene = new Scene(sceneLoader.load(), 400, 400);
+        Scene scene = new Scene(sceneLoader.load());
 
         stage.setTitle("Game Engine");
+        stage.setMaximized(true);
         stage.setScene(scene);
         stage.show();
     }
