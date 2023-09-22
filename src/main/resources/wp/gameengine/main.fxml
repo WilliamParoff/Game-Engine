@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="568.0" prefWidth="815.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wp.gameengine.controllers.MainController">
+<BorderPane prefHeight="618.0" prefWidth="740.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wp.gameengine.controllers.MainController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -26,27 +26,58 @@
       </MenuBar>
    </top>
    <center>
-      <SplitPane dividerPositions="0.5, 0.5" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <items>
-            <TabPane minWidth="-Infinity" prefHeight="416.0" prefWidth="119.0" tabClosingPolicy="UNAVAILABLE">
+      <SplitPane dividerPositions="0.65" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+        <items>
+            <SplitPane dividerPositions="0.25, 0.75" prefHeight="367.0" prefWidth="613.0">
+               <items>
+                  <TabPane minWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Untitled Tab 1">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                      <Tab text="Untitled Tab 2">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+                  <TabPane minWidth="-Infinity" prefHeight="268.0" prefWidth="100.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Untitled Tab 1">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                      <Tab text="Untitled Tab 2">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+                  <TabPane minWidth="-Infinity" prefHeight="268.0" prefWidth="100.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Untitled Tab 1" />
+                      <Tab text="Untitled Tab 2">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+               </items>
+            </SplitPane>
+            <TabPane minWidth="-Infinity" prefHeight="159.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="Untitled Tab 1">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="314.0" prefWidth="372.0" />
-                  </content>
-                </Tab>
-                <Tab text="Untitled Tab 2">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="436.0" prefWidth="372.0" />
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
-            <TabPane minWidth="-Infinity" prefHeight="416.0" prefWidth="63.0" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                <Tab text="Untitled Tab 1">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="512.0" prefWidth="129.0" />
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="155.0" prefWidth="613.0">
+                           <children>
+                          <AnchorPane layoutX="155.0" layoutY="-126.0" minHeight="0.0" minWidth="0.0" prefHeight="223.0" prefWidth="200.0" />
+                           </children></AnchorPane>
                   </content>
                 </Tab>
                 <Tab text="Untitled Tab 2">
@@ -56,28 +87,7 @@
                 </Tab>
               </tabs>
             </TabPane>
-            <TabPane minWidth="-Infinity" prefHeight="541.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                <Tab text="Untitled Tab 1">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="512.0" prefWidth="188.0" />
-                  </content>
-                </Tab>
-                <Tab text="Untitled Tab 2">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
-         </items>
+        </items>
       </SplitPane>
    </center>
-   <bottom>
-      <Accordion BorderPane.alignment="CENTER">
-        <panes>
-          <TitledPane animated="false" text="untitled 1" />
-        </panes>
-      </Accordion>
-   </bottom>
 </BorderPane>
