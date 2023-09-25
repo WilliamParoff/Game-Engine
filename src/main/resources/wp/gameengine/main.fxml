@@ -1,49 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="618.0" prefWidth="740.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wp.gameengine.controllers.MainController">
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
-   <center>
+<BorderPane prefHeight="737.0" prefWidth="1080.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wp.gameengine.controllers.MainController">
+    <top>
+        <VBox prefHeight="55.0" prefWidth="740.0" BorderPane.alignment="CENTER">
+            <children>
+                <MenuBar>
+                    <menus>
+                        <Menu mnemonicParsing="false" text="File">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Close" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Edit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Delete" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Help">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="About" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+                <ToolBar prefHeight="60.0" prefWidth="740.0">
+                    <items>
+                        <Button mnemonicParsing="false" prefHeight="18.0" prefWidth="61.0" text="Button" />
+                    </items>
+                </ToolBar>
+            </children>
+        </VBox>
+    </top>
+    <center>
       <SplitPane dividerPositions="0.65" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
         <items>
-            <SplitPane dividerPositions="0.25, 0.75" prefHeight="367.0" prefWidth="613.0">
+            <SplitPane dividerPositions="0.25510204081632654, 0.7226345083487941" prefHeight="367.0" prefWidth="613.0">
                <items>
-                  <TabPane minWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                      <Tab text="Untitled Tab 1">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                        </content>
-                      </Tab>
-                      <Tab text="Untitled Tab 2">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                        </content>
-                      </Tab>
-                    </tabs>
-                  </TabPane>
                   <TabPane minWidth="-Infinity" prefHeight="268.0" prefWidth="100.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                       <Tab text="Untitled Tab 1">
@@ -68,13 +64,30 @@
                       </Tab>
                     </tabs>
                   </TabPane>
+                  <TabPane minWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Untitled Tab 1">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                      <Tab text="Untitled Tab 2">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                    </tabs>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </TabPane>
                </items>
             </SplitPane>
             <TabPane minWidth="-Infinity" prefHeight="159.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="Untitled Tab 1">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="155.0" prefWidth="613.0">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="181.0" prefWidth="824.0">
                            <children>
                           <AnchorPane layoutX="169.0" layoutY="-48.0" minHeight="0.0" minWidth="0.0" prefHeight="223.0" prefWidth="200.0" />
                            </children></AnchorPane>
@@ -90,4 +103,11 @@
         </items>
       </SplitPane>
    </center>
+   <bottom>
+      <ToolBar prefHeight="18.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
+        <items>
+          <Button mnemonicParsing="false" text="Button" />
+        </items>
+      </ToolBar>
+   </bottom>
 </BorderPane>
