@@ -1,205 +1,116 @@
 package wp.gameengine;
 
-import javafx.collections.ListChangeListener;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Builder;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class DraggableTab extends Tab {
 
-    private static final Set<TabPane> tabPanes = new HashSet<>();
+    // ======================================================
+    // Static members
+    // ======================================================
 
-    private final Stage window;
+    private static final Set<TabPane> panes = new HashSet<>();
 
-    private final Text dragText;
-    private final Stage drag;
+    // ======================================================
+    // Object members
+    // ======================================================
+
+    private Stage window;
+    private Stage dragged;
 
     private Label label;
+    private Text text;
+
+    private String labelText;
+
+    // ======================================================
+    // Constructors
+    // ======================================================
 
     public DraggableTab() {
-        this(null);
-    }
+        super();
 
-    public DraggableTab(String text) {
-        this(text, null);
-    }
+        window = initWindow();
+        dragged = initDragged();
 
-    public DraggableTab(String text, Node content) {
-        super(text, content);
-
-        Rectangle dummy = new Rectangle(3, 10, Color.web("#555555"));
-        StackPane markerStack = new StackPane();
-        markerStack.getChildren().add(dummy);
-        window = new Stage(StageStyle.UNDECORATED);
-        window.setScene(new Scene(markerStack));
-
-        dragText = new Text(text);
-
-        StackPane dragPane = new StackPane();
-        dragPane.setStyle("-fx-background-color:#DDDDDD");
-        StackPane.setAlignment(dragText, Pos.CENTER);
-        dragPane.getChildren().add(dragText);
-        drag = new Stage(StageStyle.UNDECORATED);
-        drag.setScene(new Scene(dragPane));
-
-        label = new Label("Some Text");
+        label = new Label();
         setGraphic(label);
 
-        label.setOnMouseDragged(event -> {
-            System.out.println("Dragged");
-            drag.setWidth(label.getWidth() + 10);
-            drag.setHeight(label.getHeight() + 10);
-            drag.setX(event.getScreenX());
-            drag.setY(event.getScreenY());
-            drag.show();
-
-            Point2D screenPoint = new Point2D(event.getScreenX(), event.getScreenY());
-            tabPanes.add(getTabPane());
-            InsertData data = getInsertData(screenPoint);
-
-            if (data == null || data.insertPane.getTabs().isEmpty()) {
-                window.hide();
-            } else {
-                int index = data.index;
-                boolean end = false;
-                if (index == data.insertPane.getTabs().size()) {
-                    end = true;
-                    index--;
-                }
-
-                Rectangle2D rect = getAbsoluteRect(data.insertPane.getTabs().get(index));
-                window.setX(end ? rect.getMaxX() + 13 : rect.getMinX());
-                window.setY(rect.getMaxY() + 10);
-                window.show();
-            }
-        });
-
-        label.setOnMouseReleased(event -> {
-            window.hide();
-            drag.hide();
-            if (!event.isStillSincePress()) {
-                Point2D screenPoint = new Point2D(event.getScreenX(), event.getScreenY());
-                TabPane oldTabPane = getTabPane();
-                int oldIndex = oldTabPane.getTabs().indexOf(this);
-                tabPanes.add(oldTabPane);
-
-                InsertData data = getInsertData(screenPoint);
-                if (data != null) {
-                    int addIndex = data.index;
-                    if (oldTabPane == data.insertPane && oldTabPane.getTabs().size() == 1) {
-                        return;
-                    }
-                    oldTabPane.getTabs().remove(this);
-                    if (oldIndex < addIndex && oldTabPane == data.insertPane) {
-                        addIndex--;
-                    }
-                    if (addIndex > data.insertPane.getTabs().size()) {
-                        addIndex = data.insertPane.getTabs().size();
-                    }
-                    data.insertPane.getTabs().add(addIndex, this);
-                    data.insertPane.selectionModelProperty().get().select(addIndex);
-                    return;
-                }
-
-                final Stage newStage = new Stage();
-                final TabPane pane = new TabPane();
-                tabPanes.add(pane);
-
-                newStage.setOnHiding(stageEvent -> tabPanes.remove(pane));
-                pane.getTabs().addListener((ListChangeListener<Tab>) c -> {
-                    if (pane.getTabs().isEmpty()) {
-                        newStage.hide();
-                    }
-                });
-
-                newStage.setScene(new Scene(pane));
-                newStage.initStyle(StageStyle.UTILITY);
-                newStage.setX(event.getScreenX());
-                newStage.setY(event.getScreenY());
-                newStage.show();
-
-                pane.requestLayout();
-                pane.requestFocus();
-            }
-        });
+        label.setOnMouseDragged(this::dragEvent);
+        label.setOnMouseReleased(this::releasedEvent);
     }
 
-    private InsertData getInsertData(Point2D screenPoint) {
-        for(TabPane tabPane : tabPanes) {
-            Rectangle2D tabAbsolute = getAbsoluteRect(tabPane);
-            if(tabAbsolute.contains(screenPoint)) {
-                int tabInsertIndex = 0;
-                if(!tabPane.getTabs().isEmpty()) {
-                    Rectangle2D firstTabRect = getAbsoluteRect(tabPane.getTabs().get(0));
-                    if(firstTabRect.getMaxY()+60 < screenPoint.getY() || firstTabRect.getMinY() > screenPoint.getY()) {
-                        return null;
-                    }
-                    Rectangle2D lastTabRect = getAbsoluteRect(tabPane.getTabs().get(tabPane.getTabs().size() - 1));
-                    if(screenPoint.getX() < (firstTabRect.getMinX() + firstTabRect.getWidth() / 2)) {
-                        tabInsertIndex = 0;
-                    }
-                    else if(screenPoint.getX() > (lastTabRect.getMaxX() - lastTabRect.getWidth() / 2)) {
-                        tabInsertIndex = tabPane.getTabs().size();
-                    }
-                    else {
-                        for(int i = 0; i < tabPane.getTabs().size() - 1; i++) {
-                            Tab leftTab = tabPane.getTabs().get(i);
-                            Tab rightTab = tabPane.getTabs().get(i + 1);
-                            if(leftTab instanceof FXTabsExample.DraggableTab && rightTab instanceof FXTabsExample.DraggableTab) {
-                                Rectangle2D leftTabRect = getAbsoluteRect(leftTab);
-                                Rectangle2D rightTabRect = getAbsoluteRect(rightTab);
-                                if(betweenX(leftTabRect, rightTabRect, screenPoint.getX())) {
-                                    tabInsertIndex = i + 1;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                return new InsertData(tabInsertIndex, tabPane);
-            }
-        }
-        return null;
+    // ======================================================
+    // Static methods
+    // ======================================================
+
+    public static void addTabPane(TabPane pane) {
+        DraggableTab.panes.add(pane);
     }
 
-    private Rectangle2D getAbsoluteRect(Control node) {
-        return new Rectangle2D(node.localToScene(node.getLayoutBounds().getMinX(), node.getLayoutBounds().getMinY()).getX() + node.getScene().getWindow().getX(),
-                node.localToScene(node.getLayoutBounds().getMinX(), node.getLayoutBounds().getMinY()).getY() + node.getScene().getWindow().getY(),
-                node.getWidth(),
-                node.getHeight());
+    // ======================================================
+    // Object methods
+    // ======================================================
+
+    private Stage initWindow() {
+        Rectangle dummy = new Rectangle(3, 10, Color.RED);
+        StackPane windowPane = new StackPane(dummy);
+
+        Stage stage = new Stage(StageStyle.UNDECORATED);
+        stage.setScene(new Scene(windowPane));
+        return stage;
     }
 
-    private Rectangle2D getAbsoluteRect(Tab tab) {
-        Control node = ((DraggableTab) tab).getLabel();
-        return getAbsoluteRect(node);
+    private Stage initDragged() {
+        text = new Text();
+        StackPane dragPane = new StackPane();
+        dragPane.setStyle("-fx-background-color:#DDDDDD");
+        StackPane.setAlignment(text, Pos.CENTER);
+        dragPane.getChildren().add(text);
+
+        Stage stage = new Stage(StageStyle.UNDECORATED);
+        stage.setScene(new Scene(dragPane));
+        return stage;
     }
 
-    public Label getLabel() {
-        return label;
+    private void dragEvent(MouseEvent event) {
+        dragged.setWidth(label.getWidth() + 10);
+        dragged.setHeight(label.getHeight() + 10);
+        dragged.setX(event.getScreenX());
+        dragged.setY(event.getScreenY());
+        dragged.show();
+
+        Point2D point = new Point2D(event.getScreenX(), event.getScreenY());
+        
     }
 
-    private boolean betweenX(Rectangle2D r1, Rectangle2D r2, double xPoint) {
-        double lowerBound = r1.getMinX() + r1.getWidth() / 2;
-        double upperBound = r2.getMaxX() - r2.getWidth() / 2;
-        return xPoint >= lowerBound && xPoint <= upperBound;
+    private void releasedEvent(MouseEvent event) {
+        dragged.hide();
+
     }
 
-    private record InsertData(int index, TabPane insertPane) {
+    public String getLabelText() {
+        return this.labelText;
+    }
 
+    public void setLabelText(String labelText) {
+        this.labelText = labelText;
+        this.label.setText(labelText);
+        this.text.setText(labelText);
     }
 }
