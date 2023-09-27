@@ -67,7 +67,8 @@ public class FXTabsExample {
             dragText = new Text(text);
             StackPane.setAlignment(dragText, Pos.CENTER);
             dragStagePane.getChildren().add(dragText);
-            dragStage.setScene(new Scene(dragStagePane));
+            dragStage.setScene(new
+                    Scene(dragStagePane));
             nameLabel.setOnMouseDragged(new EventHandler<MouseEvent>() {
 
                 @Override
