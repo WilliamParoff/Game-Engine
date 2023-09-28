@@ -43,23 +43,7 @@
                <items>
                   <fx:include source="editor_pane.fxml"/>
                   <fx:include source="editor_pane.fxml"/>
-                  <TabPane minWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                      <Tab text="Untitled Tab 1">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                        </content>
-                      </Tab>
-                      <Tab text="Untitled Tab 2">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                        </content>
-                      </Tab>
-                    </tabs>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                  </TabPane>
+                  <fx:include source="editor_pane.fxml"/>
                </items>
             </SplitPane>
             <TabPane minWidth="-Infinity" prefHeight="159.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
