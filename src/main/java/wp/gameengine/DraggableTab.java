@@ -1,8 +1,10 @@
 package wp.gameengine;
 
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -23,8 +25,6 @@ public class DraggableTab extends Tab {
     // Static members
     // ======================================================
 
-    private static final Set<TabPane> panes = new HashSet<>();
-
     // ======================================================
     // Objects members
     // ======================================================
@@ -35,6 +35,8 @@ public class DraggableTab extends Tab {
     private String labelText;
     private Label label;
     private Text text;
+
+    private boolean addedTabPane = false;
 
     // ======================================================
     // Constructors and Constructor Methods
@@ -91,13 +93,9 @@ public class DraggableTab extends Tab {
         return getAbsoluteRect(node);
     }
 
-    public static void addTabPane(TabPane pane) {
-        panes.add(pane);
-    }
-
-    private static TabPane getTabPane(Point2D pos) {
-        for (TabPane pane : panes) {
-            if (pane.contains(pos)) return pane;
+    private static DraggableTabPane getTabPane(Point2D pos) {
+        for (DraggableTabPane pane : DraggableTabPane.getInstances()) {
+            if (pane.getBounds().contains(pos)) return pane;
         }
         return null;
     }
@@ -122,10 +120,10 @@ public class DraggableTab extends Tab {
 
     private void previewHandler(MouseEvent event) {
         Point2D pos = new Point2D(event.getScreenX(), event.getScreenY());
-        TabPane pane = getTabPane(pos);
+        DraggableTabPane pane = getTabPane(pos);
         if (pane == null) return;
 
-        Rectangle2D rect = getAbsoluteRect(pane);
+        Bounds rect = pane.getBounds();
         preview.setX(rect.getMinX());
         preview.setY(rect.getMinY());
         preview.setWidth(rect.getWidth());

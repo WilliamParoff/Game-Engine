@@ -5,6 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import wp.gameengine.DraggableTabOld ?>
 
+<?import wp.gameengine.DraggableTab?>
+<?import wp.gameengine.DraggableTabPane?>
 <BorderPane prefHeight="737.0" prefWidth="1080.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wp.gameengine.controllers.MainController">
     <top>
         <VBox prefHeight="55.0" prefWidth="740.0" BorderPane.alignment="CENTER">
@@ -41,9 +43,21 @@
         <items>
             <SplitPane dividerPositions="0.25510204081632654, 0.7226345083487941" prefHeight="367.0" prefWidth="613.0">
                <items>
-                  <fx:include source="editor_pane.fxml"/>
-                  <fx:include source="editor_pane.fxml"/>
-                  <fx:include source="editor_pane.fxml"/>
+                  <DraggableTabPane>
+                      <tabs>
+                          <DraggableTab labelText="Left Tab"/>
+                      </tabs>
+                  </DraggableTabPane>
+                   <DraggableTabPane>
+                       <tabs>
+                           <DraggableTab labelText="Middle Tab"/>
+                       </tabs>
+                   </DraggableTabPane>
+                   <DraggableTabPane>
+                       <tabs>
+                           <DraggableTab labelText="Right Tab"/>
+                       </tabs>
+                   </DraggableTabPane>
                </items>
             </SplitPane>
             <TabPane minWidth="-Infinity" prefHeight="159.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
