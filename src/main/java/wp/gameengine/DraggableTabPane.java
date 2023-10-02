@@ -1,8 +1,11 @@
 package wp.gameengine;
 
 import javafx.geometry.Bounds;
+import javafx.scene.Parent;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
+import wp.gameengine.exceptions.JavaFXFormatException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,5 +61,12 @@ public class DraggableTabPane extends TabPane {
         StackPane header = (StackPane) lookup(".tab-header-area");
         Bounds local = header.getBoundsInLocal();
         return localToScreen(local);
+    }
+
+    public SplitPane getParentSplit() {
+        for (Parent parent = getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof SplitPane split) return split;
+        }
+        throw new JavaFXFormatException("Draggable tab pane requires at least one parent to be a split pane.");
     }
 }

@@ -2,7 +2,7 @@
     -primary-background: #525252;
     -secondary-background: #3b3b3b;
 }
-.root {
+.tab-pane {
     -fx-border-width: 2;
     -fx-border-color: black;
 }
