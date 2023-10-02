@@ -1,0 +1,39 @@
+* {
+    -primary-background: #525252;
+    -secondary-background: #3b3b3b;
+}
+.root {
+    -fx-border-width: 2;
+    -fx-border-color: black;
+}
+.draggable-tab-pane {
+    -fx-text-fill: white;
+}
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: -secondary-background;
+}
+.tab-pane .tab {
+	-fx-background-color: transparent;
+}
+.tab-pane .tab:selected {
+	-fx-background-insets: 0 0 0 0;
+	-fx-background-radius: 0 0 0 0;
+	-fx-background-color: -primary-background;
+}
+.tab-pane:top *.tab-header-area {
+	-fx-padding: 0 0 0 0;
+	-fx-background-color: -secondary-background;
+}
+.draggable-tab-label {
+	-fx-padding: 0 0 0 0;
+    -fx-text-fill: white;
+}
+.draggable-tab-text {
+    -fx-text-fill: white;
+}
+.draggable-preview  {
+    -fx-background-color: #DDDDDD;
+}
+.draggable-dragged {
+    -fx-background-color: -primary-background;
+}

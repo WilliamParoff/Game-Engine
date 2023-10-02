@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import wp.gameengine.DraggableTabOld ?>
+<?import wp.gameengine.*?>
 
-<?import wp.gameengine.DraggableTab?>
-<?import wp.gameengine.DraggableTabPane?>
-<BorderPane prefHeight="737.0" prefWidth="1080.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wp.gameengine.controllers.MainController">
+<BorderPane prefHeight="737.0" prefWidth="1080.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wp.gameengine.controllers.MainController">
     <top>
         <VBox prefHeight="55.0" prefWidth="740.0" BorderPane.alignment="CENTER">
             <children>
@@ -41,42 +38,35 @@
     <center>
       <SplitPane dividerPositions="0.65" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
         <items>
-            <SplitPane dividerPositions="0.25510204081632654, 0.7226345083487941" prefHeight="367.0" prefWidth="613.0">
+            <SplitPane dividerPositions="0.2922077922077922, 0.7263450834879406" prefHeight="367.0" prefWidth="613.0">
                <items>
                   <DraggableTabPane>
                       <tabs>
-                          <DraggableTab labelText="Left Tab"/>
+                          <DraggableTab labelText="Left Tab 1" />
                       </tabs>
                   </DraggableTabPane>
                    <DraggableTabPane>
                        <tabs>
-                           <DraggableTab labelText="Middle Tab"/>
+                           <DraggableTab labelText="Middle Tab 1" />
+                           <DraggableTab labelText="Middle Tab 2" />
                        </tabs>
                    </DraggableTabPane>
                    <DraggableTabPane>
                        <tabs>
-                           <DraggableTab labelText="Right Tab"/>
+                           <DraggableTab labelText="Right Tab 1" />
+                           <DraggableTab labelText="Right Tab 2" />
+                           <DraggableTab labelText="Right Tab 3" />
                        </tabs>
                    </DraggableTabPane>
                </items>
             </SplitPane>
-            <TabPane minWidth="-Infinity" prefHeight="159.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                <Tab text="Untitled Tab 1">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="181.0" prefWidth="824.0">
-                           <children>
-                          <AnchorPane layoutX="169.0" layoutY="-48.0" minHeight="0.0" minWidth="0.0" prefHeight="223.0" prefWidth="200.0" />
-                           </children></AnchorPane>
-                  </content>
-                </Tab>
-                <Tab text="Untitled Tab 2">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
+            <SplitPane>
+                <DraggableTabPane>
+                    <DraggableTab labelText="Bottom Tab 1" />
+                    <DraggableTab labelText="Bottom Tab 2" />
+                    <DraggableTab labelText="Bottom Tab 3" />
+                </DraggableTabPane>
+            </SplitPane>
         </items>
       </SplitPane>
    </center>

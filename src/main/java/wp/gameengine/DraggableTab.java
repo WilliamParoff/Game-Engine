@@ -1,147 +1,112 @@
 package wp.gameengine;
 
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.net.URL;
+import java.util.Objects;
 
 public class DraggableTab extends Tab {
     // ======================================================
-    // Static members
+    // Static Members
     // ======================================================
 
-    // ======================================================
-    // Objects members
-    // ======================================================
+    private static final String LABEL_CLASS = "draggable-tab-label";
 
-    private Stage preview;
-    private Stage dragged;
+    // ======================================================
+    // Object Members
+    // ======================================================
 
     private String labelText;
-    private Label label;
-    private Text text;
 
-    private boolean addedTabPane = false;
+    private final Stage dragStage = new Stage();
+    private final Label dragLabel = new Label();
+    private final Label label = new Label();
 
     // ======================================================
-    // Constructors and Constructor Methods
+    // Constructors
     // ======================================================
 
     public DraggableTab() {
         super();
 
-        label = new Label();
+        URL url = getClass().getResource("main.css");
+        String style = Objects.requireNonNull(url).toExternalForm();
+
+        initLabel();
+        initDragStage(style);
+    }
+
+    private void initLabel() {
+        dragLabel.getStyleClass().add(LABEL_CLASS);
+        label.getStyleClass().add(LABEL_CLASS);
+        label.setOnMouseDragged(this::mouseDragged);
+        label.setOnMouseReleased(this::dragReleased);
         setGraphic(label);
-        text = new Text();
-
-        preview = initPreview();
-        dragged = initDragged();
-
-        label.setOnMouseDragged(this::draggedEvent);
-        label.setOnMouseReleased(this::releasedEvent);
     }
 
-    private Stage initPreview() {
-        StackPane pane = new StackPane();
-        pane.setStyle("-fx-background-color:#DDDDDD");
-        Stage stage = new Stage(StageStyle.UNDECORATED);
-        stage.setScene(new Scene(pane));
-        return stage;
-    }
+    private void initDragStage(String style) {
 
-    private Stage initDragged() {
-        StackPane.setAlignment(text, Pos.CENTER);
-        StackPane pane = new StackPane();
-        pane.setStyle("-fx-background-color:#DDDDDD");
-        pane.getChildren().add(text);
-        Stage stage = new Stage(StageStyle.UNDECORATED);
-        stage.setScene(new Scene(pane));
-        return stage;
+        Tab tab = new Tab();
+        tab.setGraphic(dragLabel);
+        tab.setContent(new StackPane());
+
+        TabPane pane = new TabPane(tab);
+        pane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+
+        Scene scene = new Scene(pane);
+        scene.getStylesheets().add(style);
+
+        dragStage.initStyle(StageStyle.UNDECORATED);
+        dragStage.setScene(scene);
+        dragStage.setWidth(150);
+        dragStage.setHeight(150);
     }
 
     // ======================================================
-    // Static methods
+    // Static Methods
     // ======================================================
 
-    private static Rectangle2D getAbsoluteRect(Control node) {
-        double x = node.getScene().getWindow().getX();
-        double y = node.getScene().getWindow().getY();
-        double nodeMinX = node.getLayoutBounds().getMinX();
-        double nodeMinY = node.getLayoutBounds().getMinY();
-        double minX = node.localToScene(nodeMinX, nodeMinY).getX() + x;
-        double minY = node.localToScene(nodeMinX, nodeMinY).getY() + y;
-        return new Rectangle2D(minX, minY, node.getWidth(), node.getHeight());
-    }
-
-    private static Rectangle2D getAbsoluteRect(Tab tab) {
-        Control node = ((DraggableTab) tab).getLabel();
-        return getAbsoluteRect(node);
-    }
-
-    private static DraggableTabPane getTabPane(Point2D pos) {
+    private static DraggableTabPane getTabPane(Point2D pt) {
         for (DraggableTabPane pane : DraggableTabPane.getInstances()) {
-            if (pane.getBounds().contains(pos)) return pane;
+            if (pane.getBounds().contains(pt)) return pane;
         }
         return null;
     }
 
     // ======================================================
-    // Object methods
+    // Event Handlers
     // ======================================================
 
-    private void draggedEvent(MouseEvent event) {
-        dragged.setWidth(label.getWidth() + 10);
-        dragged.setHeight(label.getHeight() + 10);
-        dragged.setX(event.getScreenX());
-        dragged.setY(event.getScreenY());
-        dragged.show();
-        previewHandler(event);
+    private void mouseDragged(MouseEvent e) {
+        dragStage.setX(e.getScreenX());
+        dragStage.setY(e.getScreenY());
+        dragStage.show();
     }
 
-    private void releasedEvent(MouseEvent event) {
-        preview.hide();
-        dragged.hide();
+    private void dragReleased(MouseEvent e) {
+        dragStage.hide();
     }
 
-    private void previewHandler(MouseEvent event) {
-        Point2D pos = new Point2D(event.getScreenX(), event.getScreenY());
-        DraggableTabPane pane = getTabPane(pos);
-        if (pane == null) return;
-
-        Bounds rect = pane.getBounds();
-        preview.setX(rect.getMinX());
-        preview.setY(rect.getMinY());
-        preview.setWidth(rect.getWidth());
-        preview.setHeight(rect.getHeight());
-        preview.show();
-    }
+    // ======================================================
+    // Object Methods
+    // ======================================================
 
     public String getLabelText() {
         return labelText;
     }
 
     public void setLabelText(String labelText) {
-        this.labelText = labelText;
+        this.dragLabel.setText(labelText);
         this.label.setText(labelText);
-        this.text.setText(labelText);
-    }
-
-    public Label getLabel() {
-        return label;
+        this.labelText = labelText;
     }
 }
