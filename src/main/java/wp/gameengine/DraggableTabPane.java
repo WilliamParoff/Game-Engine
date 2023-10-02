@@ -31,6 +31,7 @@ public class DraggableTabPane extends TabPane {
         super();
 
         getStyleClass().add(STYLE_CLASS);
+        setTabDragPolicy(TabDragPolicy.REORDER);
         setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
         addInstance(this);

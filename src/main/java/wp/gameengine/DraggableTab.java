@@ -7,9 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabDragPolicy;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -21,6 +21,9 @@ public class DraggableTab extends Tab {
     // Static Members
     // ======================================================
 
+    private static final Stage dragStage = new Stage();
+    private static final Label dragLabel = new Label();
+
     private static final String LABEL_CLASS = "draggable-tab-label";
 
     private static final Integer DEFAULT_SIZE = 150;
@@ -31,22 +34,30 @@ public class DraggableTab extends Tab {
 
     private String labelText;
 
-    private final Stage dragStage = new Stage();
-    private final Label dragLabel = new Label();
     private final Label label = new Label();
 
     // ======================================================
     // Constructors
     // ======================================================
 
-    public DraggableTab() {
-        super();
-
-        URL url = getClass().getResource("main.css");
+    static {
+        URL url = DraggableTab.class.getResource("main.css");
         String style = Objects.requireNonNull(url).toExternalForm();
 
+        Tab tab = new Tab();
+        tab.setGraphic(dragLabel);
+        TabPane pane = new TabPane(tab);
+        pane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+        Scene scene = new Scene(pane);
+        scene.getStylesheets().add(style);
+
+        dragStage.initStyle(StageStyle.UNDECORATED);
+        dragStage.setScene(scene);
+    }
+
+    public DraggableTab() {
+        super();
         initLabel();
-        initDragStage(style);
     }
 
     private void initLabel() {
@@ -56,21 +67,6 @@ public class DraggableTab extends Tab {
         label.setOnMouseDragged(this::mouseDragged);
         label.setOnMouseReleased(this::dragReleased);
         setGraphic(label);
-    }
-
-    private void initDragStage(String style) {
-        Tab tab = new Tab();
-        tab.setGraphic(dragLabel);
-        tab.setContent(new StackPane());
-
-        TabPane pane = new TabPane(tab);
-        pane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-
-        Scene scene = new Scene(pane);
-        scene.getStylesheets().add(style);
-
-        dragStage.initStyle(StageStyle.UNDECORATED);
-        dragStage.setScene(scene);
     }
 
     // ======================================================
@@ -88,13 +84,22 @@ public class DraggableTab extends Tab {
         return new BoundingBox(pt.getX(), pt.getY(), DEFAULT_SIZE, DEFAULT_SIZE);
     }
 
+    private static boolean inHeaderBounds(DraggableTabPane pane, Point2D pt) {
+        Bounds headerBounds = pane.getHeaderBounds();
+        double minX = headerBounds.getMinX();
+        double minY = headerBounds.getMinY();
+        double width = headerBounds.getWidth();
+        double height = headerBounds.getHeight() * 1.5;
+        Bounds bounds = new BoundingBox(minX, minY, width, height);
+        return bounds.contains(pt);
+    }
+
     private static boolean inLeftBounds(DraggableTabPane pane, Point2D pt) {
         Bounds paneBounds = pane.getBounds();
-        Bounds headerBounds = pane.getHeaderBounds();
         double minX = paneBounds.getMinX();
-        double minY = paneBounds.getMinY() + headerBounds.getHeight();
+        double minY = paneBounds.getMinY();
         double width = paneBounds.getWidth() / 4;
-        double height = paneBounds.getHeight() - headerBounds.getHeight();
+        double height = paneBounds.getHeight();
         Bounds bounds = new BoundingBox(minX, minY, width, height);
         return bounds.contains(pt);
     }
@@ -110,11 +115,10 @@ public class DraggableTab extends Tab {
 
     private static boolean inRightBounds(DraggableTabPane pane, Point2D pt) {
         Bounds paneBounds = pane.getBounds();
-        Bounds headerBounds = pane.getHeaderBounds();
         double width = paneBounds.getWidth() / 4;
-        double height = paneBounds.getHeight() - headerBounds.getHeight();
+        double height = paneBounds.getHeight();
         double minX = paneBounds.getMaxX() - width;
-        double minY = paneBounds.getMinY() + headerBounds.getHeight();
+        double minY = paneBounds.getMinY();
         Bounds bounds = new BoundingBox(minX, minY, width, height);
         return bounds.contains(pt);
     }
@@ -152,7 +156,7 @@ public class DraggableTab extends Tab {
     // ======================================================
 
     private void dragEntered(MouseEvent e) {
-
+        dragLabel.setText(labelText);
     }
 
     private void mouseDragged(MouseEvent e) {
@@ -162,6 +166,16 @@ public class DraggableTab extends Tab {
         Bounds rect;
         if (pane == null) {
             rect = getDefaultBounds(pt);
+        } else if (inHeaderBounds(pane, pt)) {
+            if (pane != getPane()) {
+                pane.getTabs().add(this);
+                getPane().getTabs().remove(this);
+                MouseEvent.fireEvent(label, e);
+            }
+
+            pane.setTabDragPolicy(TabDragPolicy.REORDER);
+            dragStage.hide();
+            return;
         } else if (inLeftBounds(pane, pt)) {
             rect = getLeftBounds(pane);
         } else if (inRightBounds(pane, pt)) {
@@ -170,6 +184,10 @@ public class DraggableTab extends Tab {
             rect = getBottomBounds(pane);
         } else {
             rect = getDefaultBounds(pt);
+        }
+
+        if (pane != null) {
+            pane.setTabDragPolicy(TabPane.TabDragPolicy.FIXED);
         }
 
         dragStage.setX(rect.getMinX());
@@ -195,5 +213,9 @@ public class DraggableTab extends Tab {
         this.dragLabel.setText(labelText);
         this.label.setText(labelText);
         this.labelText = labelText;
+    }
+
+    public DraggableTabPane getPane() {
+        return (DraggableTabPane) getTabPane();
     }
 }
