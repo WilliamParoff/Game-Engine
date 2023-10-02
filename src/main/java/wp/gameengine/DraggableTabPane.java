@@ -1,12 +1,8 @@
 package wp.gameengine;
 
 import javafx.geometry.Bounds;
-import javafx.geometry.Orientation;
-import javafx.scene.Parent;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
-import wp.gameengine.exceptions.JavaFXFormatException;
 
 import java.util.ArrayList;
 import java.util.List;
