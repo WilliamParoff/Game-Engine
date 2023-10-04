@@ -1,8 +1,12 @@
 package wp.gameengine;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
 import wp.gameengine.exceptions.JavaFXFormatException;
@@ -33,6 +37,11 @@ public class DraggableTabPane extends TabPane {
         getStyleClass().add(STYLE_CLASS);
         setTabDragPolicy(TabDragPolicy.REORDER);
         setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+        visibleProperty().addListener((observable, oldValue, newValue) -> {
+            if (Boolean.FALSE.equals(newValue)) {
+                removeInstance(this);
+            }
+        });
 
         addInstance(this);
     }
@@ -43,6 +52,10 @@ public class DraggableTabPane extends TabPane {
 
     private static void addInstance(DraggableTabPane instance) {
         DraggableTabPane.instances.add(instance);
+    }
+
+    public static void removeInstance(DraggableTabPane instance) {
+        DraggableTabPane.instances.remove(instance);
     }
 
     public static List<DraggableTabPane> getInstances() {
