@@ -268,14 +268,14 @@ public class DraggableTab extends Tab {
         DraggableTabPane newPane = new DraggableTabPane();
         newPane.getTabs().add(this);
 
-        for (Iterator<Node> iterator = oldSplit.getItems().listIterator(); iterator.hasNext();) {
-            DraggableTabPane tab = (DraggableTabPane) iterator.next();
-            if (tab.getTabs().isEmpty()) iterator.remove();
-        }
-
         split.getItems().add(index, newPane);
         for (int i = 0; i < pos.size(); i++) {
             split.setDividerPosition(i, pos.get(i));
+        }
+
+        for (Iterator<Node> iterator = oldSplit.getItems().listIterator(); iterator.hasNext();) {
+            DraggableTabPane tab = (DraggableTabPane) iterator.next();
+            if (tab.getTabs().isEmpty()) iterator.remove();
         }
     }
 
