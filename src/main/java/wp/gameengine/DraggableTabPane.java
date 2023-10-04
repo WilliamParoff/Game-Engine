@@ -83,4 +83,18 @@ public class DraggableTabPane extends TabPane {
         }
         throw new JavaFXFormatException("Draggable tab pane requires at least one parent to be a split pane.");
     }
+
+    public SplitPane getRootSplit() {
+        SplitPane rootSplit = getParentSplit();
+        for (Parent parent = rootSplit.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof SplitPane split) rootSplit = split;
+        }
+        return rootSplit;
+    }
+
+    public SplitPane nestSplit() {
+        SplitPane split = getParentSplit();
+        // TODO: make function that create a new nested split pane of the opposite orientation
+        return split;
+    }
 }

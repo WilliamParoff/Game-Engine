@@ -35,9 +35,10 @@ public class DraggableTab extends Tab {
     private static final Integer PREVIEW_SIZE = 150;
     private static final Integer DEFAULT_SIZE = 300;
     private static final Integer DEFAULT = 0;
-    private static final Integer LEFT = 1;
-    private static final Integer RIGHT = 2;
-    private static final Integer BOTTOM = 3;
+    private static final Integer HEADER = 1;
+    private static final Integer LEFT = 2;
+    private static final Integer RIGHT = 3;
+    private static final Integer BOTTOM = 4;
 
     private static final Stage dragStage = new Stage();
     private static final Label dragLabel = new Label();
@@ -91,7 +92,8 @@ public class DraggableTab extends Tab {
 
     private static DraggableTabPane getTabPane(Point2D pt) {
         for (DraggableTabPane pane : DraggableTabPane.getInstances()) {
-            if (pane.getBounds().contains(pt)) return pane;
+            Bounds bounds = pane.getBounds();
+            if (bounds != null && bounds.contains(pt)) return pane;
         }
         return null;
     }
@@ -109,6 +111,12 @@ public class DraggableTab extends Tab {
         double height = headerBounds.getHeight() * 1.5;
         Bounds bounds = new BoundingBox(minX, minY, width, height);
         return bounds.contains(pt);
+    }
+
+    private static void getHeaderBounds(DraggableTabPane pane) {
+        dragPosition = HEADER;
+        dragStage.hide();
+        pane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
     }
 
     private static boolean inLeftBounds(DraggableTabPane pane, Point2D pt) {
@@ -183,9 +191,14 @@ public class DraggableTab extends Tab {
         Point2D pt = new Point2D(e.getScreenX(), e.getScreenY());
         DraggableTabPane pane = getTabPane(pt);
 
+        getPane().setTabDragPolicy(TabPane.TabDragPolicy.FIXED);
+
         Bounds rect;
         if (pane == null) {
             rect = getDefaultBounds(pt);
+        } else if (inHeaderBounds(getPane(), pt)) {
+            getHeaderBounds(getPane());
+            return;
         } else if (inLeftBounds(pane, pt)) {
             rect = getLeftBounds(pane);
         } else if (inRightBounds(pane, pt)) {
@@ -210,6 +223,8 @@ public class DraggableTab extends Tab {
             defaultRelease(e);
         } else if (Objects.equals(dragPosition, LEFT)) {
             leftRelease(e);
+        } else if (Objects.equals(dragPosition, RIGHT)) {
+            rightRelease(e);
         }
     }
 
@@ -242,7 +257,60 @@ public class DraggableTab extends Tab {
         DraggableTabPane pane = getTabPane(pt);
         if (pane == null) throw new UnreachableException("Impossible condition met.");
 
-        SplitPane oldSplit = getPane().getParentSplit();
+        DraggableTabPane oldPane = getPane();
+        SplitPane oldSplit = oldPane.getParentSplit();
+
+        SplitPane split = pane.getParentSplit();
+        if (split.getOrientation() != Orientation.HORIZONTAL) {
+            int splitI = split.getItems().indexOf(pane);
+            double div = split.getDividerPositions()[splitI-1];
+            split.getItems().remove(pane);
+
+            SplitPane newSplit = new SplitPane();
+            newSplit.setOrientation(Orientation.HORIZONTAL);
+            newSplit.getItems().add(pane);
+
+            split.getItems().add(splitI, newSplit);
+            split = newSplit;
+        }
+
+        List<Double> pos = new ArrayList<>();
+        for (double position : split.getDividerPositions()) {
+            pos.add(position);
+        }
+
+        int index = split.getItems().indexOf(pane);
+        double rightDiv = split.getDividers().isEmpty() ? 1.0 : split.getDividerPositions()[index];
+        double leftDiv = index == 0 ? 0.0 : split.getDividerPositions()[index - 1];
+        double newDiv = ((rightDiv - leftDiv) / 3) + leftDiv;
+        pos.add(index, newDiv);
+
+        oldPane.getTabs().remove(this);
+        DraggableTabPane newPane = new DraggableTabPane();
+        newPane.getTabs().add(this);
+
+        if (oldPane.getTabs().isEmpty()) {
+            int oldPaneI = oldSplit.getItems().indexOf(oldPane);
+            oldSplit.getItems().remove(oldPaneI);
+            if (oldPaneI < index) index--;
+            if (oldPaneI < pos.size()) {
+                pos.remove(oldPaneI);
+            }
+        }
+
+        split.getItems().add(index, newPane);
+        for (int i = 0; i < pos.size(); i++) {
+            split.setDividerPosition(i, pos.get(i));
+        }
+    }
+
+    private void rightRelease(MouseEvent e) {
+        Point2D pt = new Point2D(e.getScreenX(), e.getScreenY());
+        DraggableTabPane pane = getTabPane(pt);
+        if (pane == null) throw new UnreachableException("Impossible condition met.");
+
+        DraggableTabPane oldPane = getPane();
+        SplitPane oldSplit = oldPane.getParentSplit();
 
         SplitPane split = pane.getParentSplit();
         if (split.getOrientation() != Orientation.HORIZONTAL) {
@@ -258,24 +326,29 @@ public class DraggableTab extends Tab {
             pos.add(position);
         }
 
-        int index = split.getItems().indexOf(pane);
-        double rightDiv = split.getDividers().isEmpty() ? 1.0 : split.getDividerPositions()[index];
-        double leftDiv = index == 0 ? 0.0 : split.getDividerPositions()[index - 1];
-        double newDiv = ((rightDiv - leftDiv) / 3) + leftDiv;
-        pos.add(index, newDiv);
+        int index = split.getItems().indexOf(pane) + 1;
+        double rightDiv = split.getDividers().isEmpty() || index == split.getItems().size() ? 1.0 : split.getDividerPositions()[index - 1];
+        double leftDiv = index == 1 ? 0.0 : split.getDividerPositions()[index - 2];
+        double newDiv = rightDiv - ((rightDiv - leftDiv) / 3) ;
+        pos.add(index-1, newDiv);
 
-        getPane().getTabs().remove(this);
+        oldPane.getTabs().remove(this);
         DraggableTabPane newPane = new DraggableTabPane();
         newPane.getTabs().add(this);
+
+
+        if (oldPane.getTabs().isEmpty()) {
+            int oldPaneI = oldSplit.getItems().indexOf(oldPane);
+            oldSplit.getItems().remove(oldPaneI);
+            if (oldPaneI < index) index--;
+            if (oldPaneI < pos.size()) {
+                pos.remove(oldPaneI);
+            }
+        }
 
         split.getItems().add(index, newPane);
         for (int i = 0; i < pos.size(); i++) {
             split.setDividerPosition(i, pos.get(i));
-        }
-
-        for (Iterator<Node> iterator = oldSplit.getItems().listIterator(); iterator.hasNext();) {
-            DraggableTabPane tab = (DraggableTabPane) iterator.next();
-            if (tab.getTabs().isEmpty()) iterator.remove();
         }
     }
 

@@ -60,13 +60,11 @@
                    </DraggableTabPane>
                </items>
             </SplitPane>
-            <SplitPane>
-                <DraggableTabPane>
-                    <DraggableTab labelText="Bottom Tab 1" />
-                    <DraggableTab labelText="Bottom Tab 2" />
-                    <DraggableTab labelText="Bottom Tab 3" />
-                </DraggableTabPane>
-            </SplitPane>
+            <DraggableTabPane>
+                <DraggableTab labelText="Bottom Tab 1" />
+                <DraggableTab labelText="Bottom Tab 2" />
+                <DraggableTab labelText="Bottom Tab 3" />
+            </DraggableTabPane>
         </items>
       </SplitPane>
    </center>
