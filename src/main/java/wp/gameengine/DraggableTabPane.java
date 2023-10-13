@@ -1,12 +1,9 @@
 package wp.gameengine;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.geometry.Bounds;
+import javafx.geometry.Orientation;
 import javafx.scene.Parent;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.StackPane;
 import wp.gameengine.exceptions.JavaFXFormatException;
@@ -92,9 +89,19 @@ public class DraggableTabPane extends TabPane {
         return rootSplit;
     }
 
-    public SplitPane nestSplit() {
+    public SplitPane nestSplit(Orientation orientation) {
         SplitPane split = getParentSplit();
-        // TODO: make function that create a new nested split pane of the opposite orientation
-        return split;
+        if (split.getOrientation().equals(orientation)) return split;
+
+        SplitPane nestedSplit = new SplitPane();
+        nestedSplit.setOrientation(orientation);
+
+        int index = split.getItems().indexOf(this);
+        split.getItems().add(index, nestedSplit);
+
+        split.getItems().remove(this);
+        nestedSplit.getItems().add(this);
+
+        return nestedSplit;
     }
 }

@@ -260,19 +260,7 @@ public class DraggableTab extends Tab {
         DraggableTabPane oldPane = getPane();
         SplitPane oldSplit = oldPane.getParentSplit();
 
-        SplitPane split = pane.getParentSplit();
-        if (split.getOrientation() != Orientation.HORIZONTAL) {
-            int splitI = split.getItems().indexOf(pane);
-            double div = split.getDividerPositions()[splitI-1];
-            split.getItems().remove(pane);
-
-            SplitPane newSplit = new SplitPane();
-            newSplit.setOrientation(Orientation.HORIZONTAL);
-            newSplit.getItems().add(pane);
-
-            split.getItems().add(splitI, newSplit);
-            split = newSplit;
-        }
+        SplitPane split = pane.nestSplit(Orientation.HORIZONTAL);
 
         List<Double> pos = new ArrayList<>();
         for (double position : split.getDividerPositions()) {
@@ -300,6 +288,7 @@ public class DraggableTab extends Tab {
 
         split.getItems().add(index, newPane);
         for (int i = 0; i < pos.size(); i++) {
+            System.out.printf("%d: %f%n", i, pos.get(i));
             split.setDividerPosition(i, pos.get(i));
         }
     }
@@ -312,14 +301,7 @@ public class DraggableTab extends Tab {
         DraggableTabPane oldPane = getPane();
         SplitPane oldSplit = oldPane.getParentSplit();
 
-        SplitPane split = pane.getParentSplit();
-        if (split.getOrientation() != Orientation.HORIZONTAL) {
-            split.getItems().remove(pane);
-            SplitPane newSplit = new SplitPane();
-            newSplit.setOrientation(Orientation.HORIZONTAL);
-            newSplit.getItems().add(pane);
-            split = newSplit;
-        }
+        SplitPane split = pane.nestSplit(Orientation.HORIZONTAL);
 
         List<Double> pos = new ArrayList<>();
         for (double position : split.getDividerPositions()) {
